@@ -23,5 +23,6 @@ namespace Instagram.Models
         [StringLength(50)]
         public string FamilyName { get; set; }
 
+        public List<Post> Posts { get; set; }
     }
 }
