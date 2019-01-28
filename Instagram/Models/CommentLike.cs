@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Instagram.Models
 {
-	public class CommnetLike
+	public class CommentLike
 	{
-		public int CommentLikeID { get; set; }
+		public int ID { get; set; }
 		public int UserID { get; set; }
 		public int CommentID { get; set; }
 

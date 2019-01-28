@@ -9,7 +9,7 @@ namespace Instagram.Models
 {
     public class Post
     {
-		public int PostID { get; set; }
+		public int ID { get; set; }
         public int UserID { get; set; }
 
 		public User User { get; set; }
@@ -18,20 +18,14 @@ namespace Instagram.Models
         public string Caption { get; set; }
 
         [Required]
-        [DataType(DataType.ImageUrl)]
-        public string ImageUrl { get; set; }
+        public Guid ImageName { get; set; }
 
-        private DateTime? postTime;
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime PostTime
-        {
-            get { return postTime ?? DateTime.UtcNow; }
-            set { postTime = value; }
-        }
+        public DateTime PostTime { get; set; }
 
-        public HashSet<PostLike> PostLikes { get; set; }
-		public HashSet<CommentPostUser> CPUs { get; set; }
+        public ICollection<PostLike> PostLikes { get; set; }
+		public ICollection<Comment> Comments { get; set; }
         
     }
 }
