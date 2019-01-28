@@ -8,11 +8,10 @@ namespace Instagram.Models
 {
     public class Comment
     {
-        [Required]
-        public Post CommentedOn { get; set; }
+		public int CommentID { get; set; }
 
-        [Required]
-        public User CommentOwner { get; set; }
+		public Post post;
+		public User user;
 
         [Required]
         public string Content { get; set; }
@@ -21,6 +20,7 @@ namespace Instagram.Models
         [Required]
         public DateTime CommentTime { get; set; }
 
-        public HashSet<User> UsersLiked { get; set; }
+		public HashSet<CommentPostUser> CPUs { get; set; }
+        public HashSet<CommnetLike> CommnetLikes { get; set; }
     }
 }

@@ -8,6 +8,8 @@ namespace Instagram.Models
 {
     public class User
     {
+		public int UserID { get; set; }
+
         [StringLength(30)]
         [Required]
         public string Username { get; set; }
@@ -24,5 +26,8 @@ namespace Instagram.Models
         public string FamilyName { get; set; }
 
         public List<Post> Posts { get; set; }
-    }
+		public HashSet<CommentPostUser> CPUs { get; set; }
+		public HashSet<PostLike> PostLikes { get; set; }
+		public HashSet<CommnetLike> CommentLikes { get; set; }
+	}
 }

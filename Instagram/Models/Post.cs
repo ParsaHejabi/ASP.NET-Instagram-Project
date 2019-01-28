@@ -9,8 +9,8 @@ namespace Instagram.Models
 {
     public class Post
     {
-        [Required]
-        public User PostOwner { get; set; }
+		public int PostID { get; set; }
+        public int UserID { get; set; }
 
         [StringLength(400)]
         public string Caption { get; set; }
@@ -28,8 +28,8 @@ namespace Instagram.Models
             set { postTime = value; }
         }
 
-        public HashSet<User> UsersLiked { get; set; }
-
-        public List<Comment> Comments { get; set; }
+        public HashSet<PostLike> PostLikes { get; set; }
+		public HashSet<CommentPostUser> CPUs { get; set; }
+        
     }
 }
