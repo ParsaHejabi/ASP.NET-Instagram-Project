@@ -26,7 +26,7 @@ namespace Instagram
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<InstagramContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("InstagramContext")));
 
             services.Configure<CookiePolicyOptions>(options =>
             {

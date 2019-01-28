@@ -26,6 +26,13 @@ namespace Instagram.Data
             modelBuilder.Entity<Comment>().ToTable("Comment");
             modelBuilder.Entity<PostLike>().ToTable("PostLike");
             modelBuilder.Entity<CommentLike>().ToTable("CommentLike");
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
