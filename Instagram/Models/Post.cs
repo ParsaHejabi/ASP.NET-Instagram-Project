@@ -12,7 +12,9 @@ namespace Instagram.Models
 		public int PostID { get; set; }
         public int UserID { get; set; }
 
-        [StringLength(400)]
+		public User User { get; set; }
+
+		[StringLength(400)]
         public string Caption { get; set; }
 
         [Required]
