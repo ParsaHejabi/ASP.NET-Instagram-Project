@@ -50,7 +50,7 @@ namespace Instagram.Controllers
         public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password");
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace Instagram.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password", comment.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
             return View(comment);
         }
 
@@ -86,7 +86,7 @@ namespace Instagram.Controllers
                 return NotFound();
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password", comment.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
             return View(comment);
         }
 
@@ -123,7 +123,7 @@ namespace Instagram.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password", comment.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
             return View(comment);
         }
 
