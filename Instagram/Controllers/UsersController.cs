@@ -22,8 +22,11 @@ namespace Instagram.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
-        }
+			var instagramContext = from s in _context.Users
+								   select s;
+			instagramContext = instagramContext.OrderBy(s => s.Name);
+			return View(await instagramContext.AsNoTracking().ToListAsync());
+		}
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
