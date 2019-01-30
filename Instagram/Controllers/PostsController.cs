@@ -48,7 +48,7 @@ namespace Instagram.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UserID,Caption,ImageName,PostTime")] Post post)
+        public async Task<IActionResult> Create([Bind("ID,UserID,Caption,ImagePath,PostTime")] Post post)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace Instagram.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password", post.UserID);
             return View(post);
         }
 
@@ -82,7 +82,7 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password", post.UserID);
             return View(post);
         }
 
@@ -91,7 +91,7 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,UserID,Caption,ImageName,PostTime")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,UserID,Caption,ImagePath,PostTime")] Post post)
         {
             if (id != post.ID)
             {
@@ -118,7 +118,7 @@ namespace Instagram.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Password", post.UserID);
             return View(post);
         }
 

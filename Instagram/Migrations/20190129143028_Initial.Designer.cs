@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Instagram.Migrations
 {
     [DbContext(typeof(InstagramContext))]
-    [Migration("20190128220507_Initial")]
+    [Migration("20190129143028_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,7 +73,8 @@ namespace Instagram.Migrations
                     b.Property<string>("Caption")
                         .HasMaxLength(400);
 
-                    b.Property<Guid>("ImageName");
+                    b.Property<string>("ImagePath")
+                        .IsRequired();
 
                     b.Property<DateTime>("PostTime");
 

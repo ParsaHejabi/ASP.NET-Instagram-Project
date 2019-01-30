@@ -32,7 +32,7 @@ namespace Instagram.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserID = table.Column<int>(nullable: false),
                     Caption = table.Column<string>(maxLength: 400, nullable: true),
-                    ImageName = table.Column<Guid>(nullable: false),
+                    ImagePath = table.Column<string>(nullable: false),
                     PostTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>

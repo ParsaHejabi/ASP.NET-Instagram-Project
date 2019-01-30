@@ -20,10 +20,12 @@ namespace Instagram.Models
         public string Password { get; set; }
 
         [StringLength(50)]
-        public string Name { get; set; }
+		[Display(Name = "First Name")]
+		public string Name { get; set; }
 
         [StringLength(50)]
-        public string FamilyName { get; set; }
+		[Display(Name = "Last Name")]
+		public string FamilyName { get; set; }
 
         public ICollection<Post> Posts { get; set; }
 		public ICollection<Comment> Comments { get; set; }
