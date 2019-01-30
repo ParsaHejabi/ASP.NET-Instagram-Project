@@ -20,11 +20,21 @@ namespace Instagram.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
+			//SORTING
 			var instagramContext = from s in _context.Users
 								   select s;
 			instagramContext = instagramContext.OrderBy(s => s.Name);
+			//SEARCHING
+			ViewData["CurrentFilter"] = searchString;
+			if (!String.IsNullOrEmpty(searchString))
+			{
+				searchString = searchString.ToUpper();
+				instagramContext = instagramContext.Where(s => s.Username.ToUpper().Contains(searchString)
+									   || s.Name.ToUpper().Contains(searchString)
+									   || s.FamilyName.ToUpper().Contains(searchString));
+			}
 			return View(await instagramContext.AsNoTracking().ToListAsync());
 		}
 
