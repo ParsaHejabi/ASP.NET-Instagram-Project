@@ -11,6 +11,7 @@ namespace Instagram.Models
     public class Post
     {
         public int ID { get; set; }
+        [Display(Name = "Username")]
         public int UserID { get; set; }
 
 		public User User { get; set; }
