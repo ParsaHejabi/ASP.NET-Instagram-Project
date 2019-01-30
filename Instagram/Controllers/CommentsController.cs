@@ -59,16 +59,26 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,PostID,UserID,Content,CommentTime")] Comment comment)
+        public async Task<IActionResult> Create([Bind("PostID,UserID,Content")] Comment comment)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(comment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
+                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
             return View(comment);
         }
 
@@ -95,7 +105,7 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PostID,UserID,Content,CommentTime")] Comment comment)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,PostID,UserID,Content")] Comment comment)
         {
             if (id != comment.ID)
             {

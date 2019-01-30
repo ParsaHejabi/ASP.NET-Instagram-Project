@@ -21,7 +21,7 @@ namespace Instagram.Models
 
         [DataType(DataType.DateTime)]
         [Required]
-		[Display(Name = "Time")]
+		[Display(Name = "Created Time")]
 		public DateTime CommentTime { get; set; }
 
         public HashSet<CommentLike> CommentLikes { get; set; }

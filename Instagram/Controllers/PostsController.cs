@@ -36,6 +36,8 @@ namespace Instagram.Controllers
 
             var post = await _context.Posts
                 .Include(p => p.User)
+                .Include(p => p.Comments)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (post == null)
             {
@@ -57,15 +59,25 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UserID,Caption,ImagePath,PostTime")] Post post)
+        public async Task<IActionResult> Create([Bind("UserID,Caption,ImagePath")] Post post)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(post);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
             }
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
             return View(post);
         }
 
@@ -91,7 +103,7 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,UserID,Caption,ImagePath,PostTime")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,UserID,Caption,ImagePath")] Post post)
         {
             if (id != post.ID)
             {
