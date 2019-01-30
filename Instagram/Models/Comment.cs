@@ -16,11 +16,13 @@ namespace Instagram.Models
         public User User { get; set; }
 
         [Required]
+		[StringLength(280)]
         public string Content { get; set; }
 
         [DataType(DataType.DateTime)]
         [Required]
-        public DateTime CommentTime { get; set; }
+		[Display(Name = "Time")]
+		public DateTime CommentTime { get; set; }
 
         public HashSet<CommentLike> CommentLikes { get; set; }
     }

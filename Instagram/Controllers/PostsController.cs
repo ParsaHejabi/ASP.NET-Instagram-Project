@@ -57,7 +57,7 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UserID,Caption,ImageName,PostTime")] Post post)
+        public async Task<IActionResult> Create([Bind("ID,UserID,Caption,ImagePath,PostTime")] Post post)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace Instagram.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,UserID,Caption,ImageName,PostTime")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,UserID,Caption,ImagePath,PostTime")] Post post)
         {
             if (id != post.ID)
             {

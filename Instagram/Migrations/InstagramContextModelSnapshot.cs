@@ -28,7 +28,8 @@ namespace Instagram.Migrations
                     b.Property<DateTime>("CommentTime");
 
                     b.Property<string>("Content")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(280);
 
                     b.Property<int>("PostID");
 
@@ -71,7 +72,8 @@ namespace Instagram.Migrations
                     b.Property<string>("Caption")
                         .HasMaxLength(400);
 
-                    b.Property<Guid>("ImageName");
+                    b.Property<string>("ImagePath")
+                        .IsRequired();
 
                     b.Property<DateTime>("PostTime");
 
