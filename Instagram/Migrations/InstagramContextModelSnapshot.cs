@@ -28,7 +28,8 @@ namespace Instagram.Migrations
                     b.Property<DateTime>("CommentTime");
 
                     b.Property<string>("Content")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(280);
 
                     b.Property<int>("PostID");
 
