@@ -10,29 +10,65 @@
     <h4>Post</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserID)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Password)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Username)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Caption)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Caption)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImagePath)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ImagePath)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PostLikes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PostLikes.Count)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PostTime)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PostTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Comments)
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+                <tr>
+                    <th>User</th>
+                    <th>Content</th>
+                    <th>Time</th>
+                    <th>Likes Count</th>
+                </tr>
+                @foreach (var item in Model.Comments)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Content)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CommentTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CommentLikes.Count)
+                        </td>
+                    </tr>
+                }
+            </table>
         </dd>
     </dl>
 </div>

@@ -10,12 +10,8 @@ namespace Instagram.Models
 {
     public class Post
     {
-		public Post()
-		{
-			PostTime = DateTime.Now;
-		}
-
-		public int ID { get; set; }
+        public int ID { get; set; }
+        [Display(Name = "Username")]
         public int UserID { get; set; }
 
 		public User User { get; set; }
@@ -26,13 +22,14 @@ namespace Instagram.Models
         [Required]
         public String ImagePath { get; set; }
 
-        //[Required]
         [DataType(DataType.DateTime)]
-		[BindNever]
-		[Display(Name = "Time")]
+        [Required]
+		[Display(Name = "Created Time")]
 		public DateTime PostTime { get; set; }
 
+        [Display(Name = "Post Likes")]
         public ICollection<PostLike> PostLikes { get; set; }
+
 		public ICollection<Comment> Comments { get; set; }
         
     }

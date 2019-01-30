@@ -9,7 +9,9 @@ namespace Instagram.Models
     public class Comment
     {
 		public int ID { get; set; }
+        [Display(Name = "Post ID")]
         public int PostID { get; set; }
+        [Display(Name = "Username")]
         public int UserID { get; set; }
 
         public Post Post { get; set; }
@@ -21,7 +23,7 @@ namespace Instagram.Models
 
         [DataType(DataType.DateTime)]
         [Required]
-		[Display(Name = "Time")]
+		[Display(Name = "Created Time")]
 		public DateTime CommentTime { get; set; }
 
         public HashSet<CommentLike> CommentLikes { get; set; }

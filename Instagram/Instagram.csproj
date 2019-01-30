@@ -12,6 +12,8 @@
     <Compile Remove="Migrations\20190129073205_PostScaffolded.Designer.cs" />
     <Compile Remove="Migrations\20190129143028_Initial.cs" />
     <Compile Remove="Migrations\20190129143028_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190130070955_Initial.cs" />
+    <Compile Remove="Migrations\20190130070955_Initial.Designer.cs" />
   </ItemGroup>
 
 

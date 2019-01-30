@@ -37,7 +37,8 @@ namespace Instagram.Controllers
             var comment = await _context.Comments
                 .Include(c => c.Post)
                 .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
             if (comment == null)
             {
                 return NotFound();
@@ -49,26 +50,34 @@ namespace Instagram.Controllers
         // GET: Comments/Create
         public IActionResult Create()
         {
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption");
             ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
             return View();
         }
 
         // POST: Comments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,PostID,UserID,Content,CommentTime")] Comment comment)
+        public async Task<IActionResult> Create([Bind("PostID,UserID,Content")] Comment comment)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(comment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
+                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
             return View(comment);
         }
 
@@ -85,50 +94,47 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
             ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
             return View(comment);
         }
 
         // POST: Comments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PostID,UserID,Content,CommentTime")] Comment comment)
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != comment.ID)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var CommentToUpdate = await _context.Comments.SingleOrDefaultAsync(c => c.ID == id);
+            if (await TryUpdateModelAsync<Comment>(
+                CommentToUpdate,
+                "",
+                c => c.Content))
             {
                 try
                 {
-                    _context.Update(comment);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!CommentExists(comment.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
-            return View(comment);
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", CommentToUpdate.PostID);
+            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", CommentToUpdate.UserID);
+            return View(CommentToUpdate);
         }
 
         // GET: Comments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -138,12 +144,19 @@ namespace Instagram.Controllers
             var comment = await _context.Comments
                 .Include(c => c.Post)
                 .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
             if (comment == null)
             {
                 return NotFound();
             }
 
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see your system administrator.";
+            }
             return View(comment);
         }
 
@@ -152,10 +165,25 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var comment = await _context.Comments.FindAsync(id);
-            _context.Comments.Remove(comment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var comment = await _context.Comments
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (comment == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.Comments.Remove(comment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool CommentExists(int id)
