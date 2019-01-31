@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Instagram.Data;
 using Instagram.Models;
+using System.IO;
 
 namespace Instagram.Controllers
 {
@@ -57,10 +58,39 @@ namespace Instagram.Controllers
         // POST: Posts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,Caption,ImagePath")] Post post)
+        public async Task<IActionResult> Create([Bind("UserID,Caption,Image")] PostViewModel postViewModel)
         {
+            Post post = null;
             try
             {
+                if (postViewModel == null || postViewModel.Image == null || postViewModel.Image.Length == 0)
+                {
+                    return Content("Image is not selected!");
+                }
+
+                var ext = Path.GetExtension(postViewModel.Image.FileName).ToLowerInvariant();
+
+                if (!_extensions.Keys.Contains(ext))
+                {
+                    return Content("File selected is not an image!");
+                }
+
+                var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, postViewModel.UserID);
+                var uploadFolder = Path.Combine(Path.GetTempPath(), "InstagramImages");
+                var filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await postViewModel.Image.CopyToAsync(stream);
+                }
+
+                post = new Post
+                {
+                    UserID = postViewModel.UserID,
+                    Caption = postViewModel.Caption,
+                    ImagePath = filePath
+                };
+
                 if (ModelState.IsValid)
                 {
                     _context.Add(post);
@@ -77,6 +107,22 @@ namespace Instagram.Controllers
                     "see your system administrator.");
             }
             return View(post);
+        }
+
+        private static readonly IDictionary<string, string> _extensions = new Dictionary<string, string>()
+        {
+        { ".jpg", "image/jpeg" },
+        { ".jpeg", "image/jpeg" },
+        { ".png", "image/png" }
+        };
+
+        private string GetUniqueFileName(string fileName, int UserID)
+        {
+            fileName = Path.GetFileName(fileName);
+            return UserID.ToString() + Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 5)
+                      + Path.GetExtension(fileName);
         }
 
         // GET: Posts/Edit/5
@@ -164,6 +210,11 @@ namespace Instagram.Controllers
             if (post == null)
             {
                 return RedirectToAction(nameof(Index));
+            }
+
+            if (System.IO.File.Exists(post.ImagePath))
+            {
+                System.IO.File.Delete(post.ImagePath);
             }
 
             try
