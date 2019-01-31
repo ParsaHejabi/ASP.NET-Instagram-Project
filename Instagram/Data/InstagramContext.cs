@@ -35,5 +35,46 @@ namespace Instagram.Data
 
             base.OnModelCreating(modelBuilder);
         }
+
+        public override int SaveChanges()
+        {
+            AddTimestamps();
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            AddTimestamps();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            AddTimestamps();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            AddTimestamps();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void AddTimestamps()
+        {
+            var postEntities = ChangeTracker.Entries().Where(x => x.Entity is Post && (x.State == EntityState.Added));
+
+            var commentEntities = ChangeTracker.Entries().Where(x => x.Entity is Comment && (x.State == EntityState.Added));
+
+            foreach (var entity in postEntities)
+            {
+                ((Post)entity.Entity).PostTime = DateTime.Now;
+            }
+
+            foreach (var entity in commentEntities)
+            {
+                ((Comment)entity.Entity).CommentTime = DateTime.Now;
+            }
+        }
     }
 }
