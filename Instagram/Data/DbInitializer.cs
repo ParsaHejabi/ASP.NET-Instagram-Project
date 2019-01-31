@@ -1,6 +1,7 @@
 ﻿using Instagram.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,12 +31,14 @@ namespace Instagram.Data
             }
             context.SaveChanges();
 
+            var ImagesLocation = Path.Combine(Path.GetTempPath(), "InstagramImages");
+
             var posts = new Post[]
             {
-                new Post {UserID=1,Caption="Initial Post For Admin",ImagePath="./1.jpg"},
-                new Post {UserID=1,Caption="Second Post For Admin",ImagePath="./2.jpg"},
-                new Post {UserID=2,Caption="ParsaFirst",ImagePath="./3.jpg"},
-                new Post {UserID=3,Caption="NikiFirst",ImagePath="./4.jpg"}
+                new Post {UserID=1,Caption="Initial Post For Admin",ImagePath=Path.Combine(ImagesLocation,"1Admin_47d62.jpg")},
+                new Post {UserID=1,Caption="Second Post For Admin",ImagePath=Path.Combine(ImagesLocation,"1Admin2_47d63.jpg")},
+                new Post {UserID=2,Caption="ParsaFirst",ImagePath=Path.Combine(ImagesLocation,"2Parsa_47d64.jpg")},
+                new Post {UserID=3,Caption="NikiFirst",ImagePath=Path.Combine(ImagesLocation,"3Niki_47d65.jpg")}
             };
 
             foreach (Post post in posts)
