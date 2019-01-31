@@ -20,12 +20,13 @@ namespace Instagram.Controllers
         }
 
         // GET: Posts
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(int? page)
 		{
 			var instagramContext = from s in _context.Posts.Include(p => p.User)
 								   select s;
 			instagramContext = instagramContext.OrderByDescending(s => s.PostTime);
-			return View(await instagramContext.AsNoTracking().ToListAsync());
+			int pageSize = 4;
+			return View(await PaginatedList<Post>.CreateAsync(instagramContext.AsNoTracking(), page ?? 1, pageSize));
 		}
 
 		// GET: Posts/Details/5

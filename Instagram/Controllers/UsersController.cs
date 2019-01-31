@@ -20,13 +20,21 @@ namespace Instagram.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? page, string currentFilter)
         {
 			//SORTING
 			var instagramContext = from s in _context.Users
 								   select s;
 			instagramContext = instagramContext.OrderBy(s => s.Name);
 			//SEARCHING
+			if (searchString != null)
+			{
+				page = 1;
+			}
+			else
+			{
+				searchString = currentFilter;
+			}
 			ViewData["CurrentFilter"] = searchString;
 			if (!String.IsNullOrEmpty(searchString))
 			{
@@ -35,7 +43,9 @@ namespace Instagram.Controllers
 									   || s.Name.ToUpper().Contains(searchString)
 									   || s.FamilyName.ToUpper().Contains(searchString));
 			}
-			return View(await instagramContext.AsNoTracking().ToListAsync());
+			int pageSize = 3;
+			return View(await PaginatedList<User>.CreateAsync(instagramContext.AsNoTracking(), page ?? 1, pageSize));
+			//return View(await instagramContext.AsNoTracking().ToListAsync());
 		}
 
         // GET: Users/Details/5
