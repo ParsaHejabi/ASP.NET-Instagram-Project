@@ -38,24 +38,28 @@ namespace Instagram.Data
 
         public override int SaveChanges()
         {
+            LowerCaseUsername();
             AddTimestamps();
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
+            LowerCaseUsername();
             AddTimestamps();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
         {
+            LowerCaseUsername();
             AddTimestamps();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
+            LowerCaseUsername();
             AddTimestamps();
             return base.SaveChangesAsync(cancellationToken);
         }
@@ -75,6 +79,29 @@ namespace Instagram.Data
             {
                 ((Comment)entity.Entity).CommentTime = DateTime.Now;
             }
+        }
+
+        private void LowerCaseUsername()
+        {
+            var userEntities = ChangeTracker.Entries().Where(x => x.Entity is User && (x.State == EntityState.Added));
+
+            foreach (var entity in userEntities)
+            {
+                ((User)entity.Entity).Username = ((User)entity.Entity).Username.ToLowerInvariant();
+            }
+        }
+
+        public bool VerifyUsername(string username)
+        {
+            var userEntities = this.Users;
+            foreach (var user in userEntities)
+            {
+                if (user.Username.Equals(username.ToLowerInvariant()))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
