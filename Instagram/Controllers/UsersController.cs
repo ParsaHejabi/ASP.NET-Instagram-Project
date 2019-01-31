@@ -98,6 +98,17 @@ namespace Instagram.Controllers
             return View(user);
         }
 
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult VerifyUsername(string username)
+        {
+            if (!_context.VerifyUsername(username))
+            {
+                return Json($"Username {username.ToLowerInvariant()} is already in use.");
+            }
+
+            return Json(true);
+        }
+
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Instagram.Models
 
         [StringLength(30)]
         [Required]
+        [Remote(action: "VerifyUsername", controller: "Users")]
         public string Username { get; set; }
 
         [DataType(DataType.Password)]
