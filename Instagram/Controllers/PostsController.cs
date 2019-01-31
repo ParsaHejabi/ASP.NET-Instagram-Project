@@ -21,14 +21,16 @@ namespace Instagram.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index()
-        {
-            var instagramContext = _context.Posts.Include(p => p.User);
-            return View(await instagramContext.ToListAsync());
-        }
+		public async Task<IActionResult> Index()
+		{
+			var instagramContext = from s in _context.Posts.Include(p => p.User)
+								   select s;
+			instagramContext = instagramContext.OrderByDescending(s => s.PostTime);
+			return View(await instagramContext.AsNoTracking().ToListAsync());
+		}
 
-        // GET: Posts/Details/5
-        public async Task<IActionResult> Details(int? id)
+		// GET: Posts/Details/5
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
