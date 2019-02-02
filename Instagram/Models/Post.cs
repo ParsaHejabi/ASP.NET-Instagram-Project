@@ -11,15 +11,17 @@ namespace Instagram.Models
     public class Post
     {
         public int ID { get; set; }
+
         [Display(Name = "Username")]
+        [Required]
         public int UserID { get; set; }
 
-		public User User { get; set; }
-
-		[StringLength(400)]
+		[StringLength(400, ErrorMessage = "Caption cannot be longer than 400 characters.")]
+        [DisplayFormat(NullDisplayText = "No caption")]
         public string Caption { get; set; }
 
         [Required]
+        [Display(Name = "Image Path")]
         public String ImagePath { get; set; }
 
         [DataType(DataType.DateTime)]
@@ -31,6 +33,7 @@ namespace Instagram.Models
         public ICollection<PostLike> PostLikes { get; set; }
 
 		public ICollection<Comment> Comments { get; set; }
-        
+
+        public User User { get; set; }
     }
 }

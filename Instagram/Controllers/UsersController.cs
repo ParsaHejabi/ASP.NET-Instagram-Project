@@ -25,7 +25,7 @@ namespace Instagram.Controllers
 			//SORTING
 			var instagramContext = from s in _context.Users
 								   select s;
-			instagramContext = instagramContext.OrderBy(s => s.Name);
+			instagramContext = instagramContext.OrderBy(s => s.Name + s.FamilyName);
 			//SEARCHING
 			if (searchString != null)
 			{

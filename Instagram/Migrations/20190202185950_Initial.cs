@@ -78,14 +78,12 @@ namespace Instagram.Migrations
                 name: "PostLike",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserID = table.Column<int>(nullable: false),
                     PostID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostLike", x => x.ID);
+                    table.PrimaryKey("PK_PostLike", x => new { x.UserID, x.PostID });
                     table.ForeignKey(
                         name: "FK_PostLike_Post_PostID",
                         column: x => x.PostID,
@@ -104,14 +102,12 @@ namespace Instagram.Migrations
                 name: "CommentLike",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserID = table.Column<int>(nullable: false),
                     CommentID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CommentLike", x => x.ID);
+                    table.PrimaryKey("PK_CommentLike", x => new { x.UserID, x.CommentID });
                     table.ForeignKey(
                         name: "FK_CommentLike_Comment_CommentID",
                         column: x => x.CommentID,
@@ -142,11 +138,6 @@ namespace Instagram.Migrations
                 column: "CommentID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommentLike_UserID",
-                table: "CommentLike",
-                column: "UserID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Post_UserID",
                 table: "Post",
                 column: "UserID");
@@ -155,11 +146,6 @@ namespace Instagram.Migrations
                 name: "IX_PostLike_PostID",
                 table: "PostLike",
                 column: "PostID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PostLike_UserID",
-                table: "PostLike",
-                column: "UserID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

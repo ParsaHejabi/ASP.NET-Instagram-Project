@@ -8,10 +8,12 @@ namespace Instagram.Models
 {
 	public class CommentLike
 	{
-		public int ID { get; set; }
         [Display(Name = "Username")]
+        [Required]
         public int UserID { get; set; }
+
         [Display(Name = "Comment ID")]
+        [Required]
 		public int CommentID { get; set; }
 
 		public User User { get; set; }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Instagram.Migrations
 {
     [DbContext(typeof(InstagramContext))]
-    [Migration("20190131194823_Initial")]
+    [Migration("20190202185950_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,19 +48,13 @@ namespace Instagram.Migrations
 
             modelBuilder.Entity("Instagram.Models.CommentLike", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("UserID");
 
                     b.Property<int>("CommentID");
 
-                    b.Property<int>("UserID");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserID", "CommentID");
 
                     b.HasIndex("CommentID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("CommentLike");
                 });
@@ -90,19 +84,13 @@ namespace Instagram.Migrations
 
             modelBuilder.Entity("Instagram.Models.PostLike", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("UserID");
 
                     b.Property<int>("PostID");
 
-                    b.Property<int>("UserID");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserID", "PostID");
 
                     b.HasIndex("PostID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("PostLike");
                 });

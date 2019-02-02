@@ -46,19 +46,13 @@ namespace Instagram.Migrations
 
             modelBuilder.Entity("Instagram.Models.CommentLike", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("UserID");
 
                     b.Property<int>("CommentID");
 
-                    b.Property<int>("UserID");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserID", "CommentID");
 
                     b.HasIndex("CommentID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("CommentLike");
                 });
@@ -88,19 +82,13 @@ namespace Instagram.Migrations
 
             modelBuilder.Entity("Instagram.Models.PostLike", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("UserID");
 
                     b.Property<int>("PostID");
 
-                    b.Property<int>("UserID");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserID", "PostID");
 
                     b.HasIndex("PostID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("PostLike");
                 });
