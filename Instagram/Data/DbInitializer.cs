@@ -56,7 +56,11 @@ namespace Instagram.Data
 
             foreach (Comment comment in comments)
             {
-                context.Comments.Add(comment);
+                var commentInDataBase = context.Comments.Where(c => c.Post.ID == comment.PostID && c.User.ID == comment.UserID).SingleOrDefault();
+                if (commentInDataBase == null)
+                {
+                    context.Comments.Add(comment);
+                }
             }
             context.SaveChanges();
         }

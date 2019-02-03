@@ -33,6 +33,9 @@ namespace Instagram.Data
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
+            modelBuilder.Entity<PostLike>().HasKey(p => new { p.UserID, p.PostID });
+            modelBuilder.Entity<CommentLike>().HasKey(c => new { c.UserID, c.CommentID });
+
             base.OnModelCreating(modelBuilder);
         }
 
