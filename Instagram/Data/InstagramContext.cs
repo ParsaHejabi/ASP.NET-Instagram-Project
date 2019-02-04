@@ -15,7 +15,6 @@ namespace Instagram.Data
         {
         }
 
-        //public DbSet<User> MyUsers { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
@@ -23,7 +22,6 @@ namespace Instagram.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Post>().ToTable("Post");
             modelBuilder.Entity<Comment>().ToTable("Comment");
             modelBuilder.Entity<PostLike>().ToTable("PostLike");

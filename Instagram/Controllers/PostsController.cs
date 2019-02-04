@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Instagram.Data;
 using Instagram.Models;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Instagram.Controllers
 {
+    [Authorize]
     public class PostsController : Controller
     {
         private readonly InstagramContext _context;

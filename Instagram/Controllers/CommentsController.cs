@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Instagram.Data;
 using Instagram.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Instagram.Controllers
 {
+    [Authorize]
     public class CommentsController : Controller
     {
         private readonly InstagramContext _context;
@@ -50,7 +52,7 @@ namespace Instagram.Controllers
         // GET: Comments/Create
         public IActionResult Create()
         {
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption");
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
             ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
@@ -68,7 +70,7 @@ namespace Instagram.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
+                ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
                 ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", comment.UserID);
             }
             catch (DbUpdateException /* ex */)
@@ -94,7 +96,7 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
             ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", comment.UserID);
             return View(comment);
         }
@@ -102,7 +104,7 @@ namespace Instagram.Controllers
         // POST: Comments/Edit/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> EditComment(int? id)
         {
             if (id == null)
             {
@@ -128,7 +130,7 @@ namespace Instagram.Controllers
                         "see your system administrator.");
                 }
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", CommentToUpdate.PostID);
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", CommentToUpdate.PostID);
             ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", CommentToUpdate.UserID);
             return View(CommentToUpdate);
         }
@@ -182,7 +184,7 @@ namespace Instagram.Controllers
             catch (DbUpdateException /* ex */)
             {
                 //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+                return RedirectToAction(nameof(Delete), new { id, saveChangesError = true });
             }
         }
 

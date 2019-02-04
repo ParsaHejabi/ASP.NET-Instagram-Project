@@ -42,6 +42,10 @@
     <Compile Remove="Migrations\20190204001518_CreateIdentitySchema.Designer.cs" />
     <Compile Remove="Migrations\20190204002843_CreateIdentitySchema.cs" />
     <Compile Remove="Migrations\20190204002843_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204003455_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204003455_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204133710_Initial.cs" />
+    <Compile Remove="Migrations\20190204133710_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -49,6 +53,11 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
