@@ -34,6 +34,14 @@
     <Compile Remove="Migrations\20190202161528_Initial.Designer.cs" />
     <Compile Remove="Migrations\20190202162217_Initial.cs" />
     <Compile Remove="Migrations\20190202162217_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190202185950_Initial.cs" />
+    <Compile Remove="Migrations\20190202185950_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190204001430_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204001430_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204001518_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204001518_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204002843_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204002843_CreateIdentitySchema.Designer.cs" />
   </ItemGroup>
 
 

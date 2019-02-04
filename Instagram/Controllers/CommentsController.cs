@@ -51,7 +51,7 @@ namespace Instagram.Controllers
         public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption");
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
@@ -69,7 +69,7 @@ namespace Instagram.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
-                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
+                ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", comment.UserID);
             }
             catch (DbUpdateException /* ex */)
             {
@@ -95,7 +95,7 @@ namespace Instagram.Controllers
                 return NotFound();
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", comment.UserID);
             return View(comment);
         }
 
@@ -129,7 +129,7 @@ namespace Instagram.Controllers
                 }
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", CommentToUpdate.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", CommentToUpdate.UserID);
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", CommentToUpdate.UserID);
             return View(CommentToUpdate);
         }
 

@@ -16,7 +16,7 @@ namespace Instagram.Models
 
         [Required]
         [Display(Name = "Username")]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
         [Required]
 		[StringLength(280, ErrorMessage = "Comments cannot be longer than 280 characters.")]

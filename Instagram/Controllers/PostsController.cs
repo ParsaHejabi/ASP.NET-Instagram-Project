@@ -54,7 +54,7 @@ namespace Instagram.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
@@ -100,7 +100,7 @@ namespace Instagram.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
+                ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", post.UserID);
             }
             catch (DbUpdateException /* ex */)
             {
@@ -119,7 +119,7 @@ namespace Instagram.Controllers
         { ".png", "image/png" }
         };
 
-        private string GetUniqueFileName(string fileName, int UserID)
+        private string GetUniqueFileName(string fileName, string UserID)
         {
             fileName = Path.GetFileName(fileName);
             return UserID.ToString() + Path.GetFileNameWithoutExtension(fileName)

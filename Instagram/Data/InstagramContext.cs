@@ -1,4 +1,5 @@
 ﻿using Instagram.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Instagram.Data
 {
-    public class InstagramContext : DbContext
+    public class InstagramContext : IdentityDbContext
     {
         public InstagramContext(DbContextOptions<InstagramContext> options) : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> MyUsers { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
@@ -90,7 +91,7 @@ namespace Instagram.Data
 
             foreach (var entity in userEntities)
             {
-                ((User)entity.Entity).Username = ((User)entity.Entity).Username.ToLowerInvariant();
+                ((User)entity.Entity).UserName = ((User)entity.Entity).UserName.ToLowerInvariant();
             }
         }
 
@@ -99,7 +100,7 @@ namespace Instagram.Data
             var userEntities = this.Users;
             foreach (var user in userEntities)
             {
-                if (user.Username.Equals(username.ToLowerInvariant()))
+                if (user.UserName.Equals(username.ToLowerInvariant()))
                 {
                     return false;
                 }

@@ -14,7 +14,7 @@ namespace Instagram.Models
 
         [Display(Name = "Username")]
         [Required]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
 		[StringLength(400, ErrorMessage = "Caption cannot be longer than 400 characters.")]
         [DisplayFormat(NullDisplayText = "No caption")]
