@@ -46,6 +46,8 @@
     <Compile Remove="Migrations\20190204003455_CreateIdentitySchema.Designer.cs" />
     <Compile Remove="Migrations\20190204133710_Initial.cs" />
     <Compile Remove="Migrations\20190204133710_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205105207_Initial.cs" />
+    <Compile Remove="Migrations\20190205105207_Initial.Designer.cs" />
   </ItemGroup>
 
 

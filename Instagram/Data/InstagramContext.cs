@@ -15,6 +15,7 @@ namespace Instagram.Data
         {
         }
 
+        public DbSet<User> MyUsers { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
@@ -22,6 +23,7 @@ namespace Instagram.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().ToTable("MyUsers");
             modelBuilder.Entity<Post>().ToTable("Post");
             modelBuilder.Entity<Comment>().ToTable("Comment");
             modelBuilder.Entity<PostLike>().ToTable("PostLike");
@@ -93,17 +95,17 @@ namespace Instagram.Data
             }
         }
 
-        public bool VerifyUsername(string username)
-        {
-            var userEntities = this.Users;
-            foreach (var user in userEntities)
-            {
-                if (user.UserName.Equals(username.ToLowerInvariant()))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+        //public bool VerifyUsername(string username)
+        //{
+        //    var userEntities = this.Users;
+        //    foreach (var user in userEntities)
+        //    {
+        //        if (user.UserName.Equals(username.ToLowerInvariant()))
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
     }
 }

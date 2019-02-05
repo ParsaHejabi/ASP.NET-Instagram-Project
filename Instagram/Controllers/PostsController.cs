@@ -56,14 +56,13 @@ namespace Instagram.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
         // POST: Posts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,Caption,Image")] PostViewModel postViewModel)
+        public async Task<IActionResult> Create([Bind("Caption,Image")] PostViewModel postViewModel)
         {
             Post post = null;
             try
@@ -102,7 +101,6 @@ namespace Instagram.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", post.UserID);
             }
             catch (DbUpdateException /* ex */)
             {

@@ -53,14 +53,13 @@ namespace Instagram.Controllers
         public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
-            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PostID,UserID,Content")] Comment comment)
+        public async Task<IActionResult> Create([Bind("PostID,Content")] Comment comment)
         {
             try
             {
@@ -71,7 +70,6 @@ namespace Instagram.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-                ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", comment.UserID);
             }
             catch (DbUpdateException /* ex */)
             {
@@ -97,7 +95,6 @@ namespace Instagram.Controllers
                 return NotFound();
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", comment.UserID);
             return View(comment);
         }
 
@@ -131,7 +128,6 @@ namespace Instagram.Controllers
                 }
             }
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", CommentToUpdate.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "Id", "UserName", CommentToUpdate.UserID);
             return View(CommentToUpdate);
         }
 
