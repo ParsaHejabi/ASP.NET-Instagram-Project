@@ -61,14 +61,60 @@ namespace Instagram.Controllers
             return View(post);
         }
 
+		public async Task<IActionResult> Like(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			Post post = null;
+			PostLike postlike = null;
+			try
+			{
+				var user = await _userManager.GetUserAsync(User);
+
+				post = await _context.Posts
+					.AsNoTracking()
+					.FirstOrDefaultAsync(m => m.ID == id);
+
+				postlike = new PostLike
+				{
+					UserID = await _userManager.GetUserIdAsync(user),
+					PostID = post.ID
+				};
+
+				if (ModelState.IsValid)
+				{
+					if (_context.PostLikes.Contains(postlike))
+					{
+						_context.Remove(postlike);
+						await _context.SaveChangesAsync();
+						return RedirectToAction(nameof(Index));
+					}
+					_context.Add(postlike);
+					await _context.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException /* ex */)
+			{
+				//Log the error (uncomment ex variable name and write a log.
+				ModelState.AddModelError("", "Unable to save changes. " +
+					"Try again, and if the problem persists " +
+					"see your system administrator.");
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
         // GET: Posts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Posts/Create
-        [HttpPost]
+		// POST: Posts/Create
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Caption,Image")] PostViewModel postViewModel)
         {

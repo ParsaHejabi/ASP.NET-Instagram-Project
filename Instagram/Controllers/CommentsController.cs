@@ -57,8 +57,54 @@ namespace Instagram.Controllers
             return View(comment);
         }
 
-        // GET: Comments/Create
-        public IActionResult Create()
+		public async Task<IActionResult> Like(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			Comment comment = null;
+			CommentLike commentlike = null;
+			try
+			{
+				var user = await _userManager.GetUserAsync(User);
+
+				comment = await _context.Comments
+					.AsNoTracking()
+					.FirstOrDefaultAsync(m => m.ID == id);
+
+				commentlike = new CommentLike
+				{
+					UserID = await _userManager.GetUserIdAsync(user),
+					 CommentID = comment.ID
+				};
+
+				if (ModelState.IsValid)
+				{
+					if (_context.CommentLikes.Contains(commentlike))
+					{
+						_context.Remove(commentlike);
+						await _context.SaveChangesAsync();
+						return RedirectToAction(nameof(Index));
+					}
+					_context.Add(commentlike);
+					await _context.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException /* ex */)
+			{
+				//Log the error (uncomment ex variable name and write a log.
+				ModelState.AddModelError("", "Unable to save changes. " +
+					"Try again, and if the problem persists " +
+					"see your system administrator.");
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
+		// GET: Comments/Create
+		public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
             return View();

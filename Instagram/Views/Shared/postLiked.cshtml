@@ -1,0 +1,13 @@
+﻿@model Instagram.Models.Post
+
+@{
+    ViewData["Title"] = "postLiked";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Liked</h1>
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to Post</a>
+</div>
