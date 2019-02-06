@@ -107,6 +107,8 @@ namespace Instagram.Controllers
         // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -117,6 +119,12 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
+
+            if (comment.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
             return View(comment);
         }
@@ -126,12 +134,20 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditComment(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var CommentToUpdate = await _context.Comments.SingleOrDefaultAsync(c => c.ID == id);
+
+            if (CommentToUpdate.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (await TryUpdateModelAsync<Comment>(
                 CommentToUpdate,
                 "",
@@ -157,6 +173,8 @@ namespace Instagram.Controllers
         // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -170,6 +188,11 @@ namespace Instagram.Controllers
             if (comment == null)
             {
                 return NotFound();
+            }
+
+            if (comment.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
             }
 
             if (saveChangesError.GetValueOrDefault())
@@ -186,10 +209,12 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var comment = await _context.Comments
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (comment == null)
+            if (comment == null || comment.UserID != await _userManager.GetUserIdAsync(user))
             {
                 return RedirectToAction(nameof(Index));
             }

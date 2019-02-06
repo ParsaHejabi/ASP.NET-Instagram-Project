@@ -141,6 +141,8 @@ namespace Instagram.Controllers
         // GET: Posts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -151,6 +153,11 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
+
+            if (post.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return View(post);
         }
 
@@ -159,11 +166,19 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
             }
             var PostToUpdate = await _context.Posts.SingleOrDefaultAsync(s => s.ID == id);
+
+            if (PostToUpdate.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (await TryUpdateModelAsync<Post>(
                 PostToUpdate,
                 "",
@@ -188,6 +203,8 @@ namespace Instagram.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -200,6 +217,11 @@ namespace Instagram.Controllers
             if (post == null)
             {
                 return NotFound();
+            }
+
+            if (post.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
             }
 
             if (saveChangesError.GetValueOrDefault())
@@ -217,10 +239,12 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var post = await _context.Posts
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (post == null)
+            if (post == null || post.UserID != await _userManager.GetUserIdAsync(user))
             {
                 return RedirectToAction(nameof(Index));
             }
