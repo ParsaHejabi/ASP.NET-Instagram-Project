@@ -42,28 +42,28 @@ namespace Instagram.Data
 
         public override int SaveChanges()
         {
-            LowerCaseUsername();
+            //LowerCaseUsername();
             AddTimestamps();
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            LowerCaseUsername();
+            //LowerCaseUsername();
             AddTimestamps();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
         {
-            LowerCaseUsername();
+            //LowerCaseUsername();
             AddTimestamps();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            LowerCaseUsername();
+            //LowerCaseUsername();
             AddTimestamps();
             return base.SaveChangesAsync(cancellationToken);
         }
@@ -85,15 +85,15 @@ namespace Instagram.Data
             }
         }
 
-        private void LowerCaseUsername()
-        {
-            var userEntities = ChangeTracker.Entries().Where(x => x.Entity is User && (x.State == EntityState.Added));
+        //private void LowerCaseUsername()
+        //{
+        //    var userEntities = ChangeTracker.Entries().Where(x => x.Entity is User && (x.State == EntityState.Added));
 
-            foreach (var entity in userEntities)
-            {
-                ((User)entity.Entity).UserName = ((User)entity.Entity).UserName.ToLowerInvariant();
-            }
-        }
+        //    foreach (var entity in userEntities)
+        //    {
+        //        ((User)entity.Entity).UserName = ((User)entity.Entity).UserName.ToLowerInvariant();
+        //    }
+        //}
 
         //public bool VerifyUsername(string username)
         //{
