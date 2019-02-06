@@ -61,14 +61,60 @@ namespace Instagram.Controllers
             return View(post);
         }
 
+		public async Task<IActionResult> Like(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			Post post = null;
+			PostLike postlike = null;
+			try
+			{
+				var user = await _userManager.GetUserAsync(User);
+
+				post = await _context.Posts
+					.AsNoTracking()
+					.FirstOrDefaultAsync(m => m.ID == id);
+
+				postlike = new PostLike
+				{
+					UserID = await _userManager.GetUserIdAsync(user),
+					PostID = post.ID
+				};
+
+				if (ModelState.IsValid)
+				{
+					if (_context.PostLikes.Contains(postlike))
+					{
+						_context.Remove(postlike);
+						await _context.SaveChangesAsync();
+						return RedirectToAction(nameof(Index));
+					}
+					_context.Add(postlike);
+					await _context.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException /* ex */)
+			{
+				//Log the error (uncomment ex variable name and write a log.
+				ModelState.AddModelError("", "Unable to save changes. " +
+					"Try again, and if the problem persists " +
+					"see your system administrator.");
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
         // GET: Posts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Posts/Create
-        [HttpPost]
+		// POST: Posts/Create
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Caption,Image")] PostViewModel postViewModel)
         {
@@ -141,6 +187,8 @@ namespace Instagram.Controllers
         // GET: Posts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -151,6 +199,11 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
+
+            if (post.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return View(post);
         }
 
@@ -159,11 +212,19 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
             }
             var PostToUpdate = await _context.Posts.SingleOrDefaultAsync(s => s.ID == id);
+
+            if (PostToUpdate.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (await TryUpdateModelAsync<Post>(
                 PostToUpdate,
                 "",
@@ -188,6 +249,8 @@ namespace Instagram.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -200,6 +263,11 @@ namespace Instagram.Controllers
             if (post == null)
             {
                 return NotFound();
+            }
+
+            if (post.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
             }
 
             if (saveChangesError.GetValueOrDefault())
@@ -217,10 +285,12 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var post = await _context.Posts
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (post == null)
+            if (post == null || post.UserID != await _userManager.GetUserIdAsync(user))
             {
                 return RedirectToAction(nameof(Index));
             }

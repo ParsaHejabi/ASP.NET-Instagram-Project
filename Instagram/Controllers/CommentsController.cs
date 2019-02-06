@@ -57,8 +57,54 @@ namespace Instagram.Controllers
             return View(comment);
         }
 
-        // GET: Comments/Create
-        public IActionResult Create()
+		public async Task<IActionResult> Like(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			Comment comment = null;
+			CommentLike commentlike = null;
+			try
+			{
+				var user = await _userManager.GetUserAsync(User);
+
+				comment = await _context.Comments
+					.AsNoTracking()
+					.FirstOrDefaultAsync(m => m.ID == id);
+
+				commentlike = new CommentLike
+				{
+					UserID = await _userManager.GetUserIdAsync(user),
+					 CommentID = comment.ID
+				};
+
+				if (ModelState.IsValid)
+				{
+					if (_context.CommentLikes.Contains(commentlike))
+					{
+						_context.Remove(commentlike);
+						await _context.SaveChangesAsync();
+						return RedirectToAction(nameof(Index));
+					}
+					_context.Add(commentlike);
+					await _context.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException /* ex */)
+			{
+				//Log the error (uncomment ex variable name and write a log.
+				ModelState.AddModelError("", "Unable to save changes. " +
+					"Try again, and if the problem persists " +
+					"see your system administrator.");
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
+		// GET: Comments/Create
+		public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
             return View();
@@ -107,6 +153,8 @@ namespace Instagram.Controllers
         // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -117,6 +165,12 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
+
+            if (comment.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
             return View(comment);
         }
@@ -126,12 +180,20 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditComment(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var CommentToUpdate = await _context.Comments.SingleOrDefaultAsync(c => c.ID == id);
+
+            if (CommentToUpdate.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (await TryUpdateModelAsync<Comment>(
                 CommentToUpdate,
                 "",
@@ -157,6 +219,8 @@ namespace Instagram.Controllers
         // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             if (id == null)
             {
                 return NotFound();
@@ -170,6 +234,11 @@ namespace Instagram.Controllers
             if (comment == null)
             {
                 return NotFound();
+            }
+
+            if (comment.UserID != await _userManager.GetUserIdAsync(user))
+            {
+                return RedirectToAction(nameof(Index));
             }
 
             if (saveChangesError.GetValueOrDefault())
@@ -186,10 +255,12 @@ namespace Instagram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var comment = await _context.Comments
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (comment == null)
+            if (comment == null || comment.UserID != await _userManager.GetUserIdAsync(user))
             {
                 return RedirectToAction(nameof(Index));
             }

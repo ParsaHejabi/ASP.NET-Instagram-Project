@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Instagram.Controllers
 {
-    [AllowAnonymous]
     public class UsersController : Controller
     {
         private readonly InstagramContext _context;
@@ -20,6 +19,7 @@ namespace Instagram.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Users
         public async Task<IActionResult> Index(string searchString, int? page, string currentFilter)
         {
@@ -47,18 +47,8 @@ namespace Instagram.Controllers
             int pageSize = 3;
             return View(await PaginatedList<User>.CreateAsync(instagramContext.AsNoTracking(), page ?? 1, pageSize));
         }
-
-        //[AcceptVerbs("Get", "Post")]
-        //public IActionResult VerifyUsername(string Username)
-        //{
-        //    if (!_context.VerifyUsername(Username))
-        //    {
-        //        return Json($"Username {Username.ToLowerInvariant()} is already in use.");
-        //    }
-
-        //    return Json(true);
-        //}
-
+        
+        [Authorize]
         // GET: Users/Details/5
         public async Task<IActionResult> Details(string id)
         {

@@ -43,7 +43,7 @@
                     @if (UserManager.GetUserName(User).Equals(item.UserName))
                     {
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.UserName)</a>
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index">@Html.DisplayFor(modelItem => item.UserName)</a>
                         </td>
                     }
                     else
