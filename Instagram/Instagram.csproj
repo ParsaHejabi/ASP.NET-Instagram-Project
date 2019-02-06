@@ -62,6 +62,8 @@
     <Compile Remove="Migrations\20190206121213_Initial.Designer.cs" />
     <Compile Remove="Migrations\20190206130228_Initial.cs" />
     <Compile Remove="Migrations\20190206130228_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190206143508_Initial.cs" />
+    <Compile Remove="Migrations\20190206143508_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -69,6 +71,11 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
