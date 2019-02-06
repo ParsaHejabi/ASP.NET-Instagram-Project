@@ -8,16 +8,26 @@ using Microsoft.EntityFrameworkCore;
 using Instagram.Data;
 using Instagram.Models;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Instagram.Controllers
 {
+    [Authorize]
     public class PostsController : Controller
     {
         private readonly InstagramContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public PostsController(InstagramContext context)
+        public PostsController(
+            InstagramContext context,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Posts
@@ -54,18 +64,19 @@ namespace Instagram.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
             return View();
         }
 
         // POST: Posts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,Caption,Image")] PostViewModel postViewModel)
+        public async Task<IActionResult> Create([Bind("Caption,Image")] PostViewModel postViewModel)
         {
             Post post = null;
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
                 if (postViewModel == null || postViewModel.Image == null || postViewModel.Image.Length == 0)
                 {
                     return Content("Image is not selected!");
@@ -78,7 +89,7 @@ namespace Instagram.Controllers
                     return Content("File selected is not an image!");
                 }
 
-                var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, postViewModel.UserID);
+                var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, await _userManager.GetUserNameAsync(user));
                 var uploadFolder = Path.Combine(Path.GetTempPath(), "InstagramImages");
                 var filePath = Path.Combine(uploadFolder, uniqueFileName);
 
@@ -89,7 +100,7 @@ namespace Instagram.Controllers
 
                 post = new Post
                 {
-                    UserID = postViewModel.UserID,
+                    UserID = await _userManager.GetUserIdAsync(user),
                     Caption = postViewModel.Caption,
                     ImagePath = filePath
                 };
@@ -100,7 +111,6 @@ namespace Instagram.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", post.UserID);
             }
             catch (DbUpdateException /* ex */)
             {
@@ -109,7 +119,7 @@ namespace Instagram.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            return View(post);
+            return View(postViewModel);
         }
 
         private static readonly IDictionary<string, string> _extensions = new Dictionary<string, string>()
@@ -119,7 +129,7 @@ namespace Instagram.Controllers
         { ".png", "image/png" }
         };
 
-        private string GetUniqueFileName(string fileName, int UserID)
+        private string GetUniqueFileName(string fileName, string UserID)
         {
             fileName = Path.GetFileName(fileName);
             return UserID.ToString() + Path.GetFileNameWithoutExtension(fileName)

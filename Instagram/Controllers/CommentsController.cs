@@ -7,16 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Instagram.Data;
 using Instagram.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Instagram.Controllers
 {
+    [Authorize]
     public class CommentsController : Controller
     {
         private readonly InstagramContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public CommentsController(InstagramContext context)
+        public CommentsController(
+            InstagramContext context,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Comments
@@ -50,26 +60,39 @@ namespace Instagram.Controllers
         // GET: Comments/Create
         public IActionResult Create()
         {
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption");
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username");
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
             return View();
         }
 
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PostID,UserID,Content")] Comment comment)
+        public async Task<IActionResult> Create([Bind("PostID,Content")] CommentViewModel commentViewModel)
         {
+            Comment comment = null;
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
+                comment = new Comment
+                {
+                    UserID = await _userManager.GetUserIdAsync(user),
+                    Content = commentViewModel.Content,
+                    PostID = commentViewModel.PostID
+                };
+
+                var errors = ModelState
+    .Where(x => x.Value.Errors.Count > 0)
+    .Select(x => new { x.Key, x.Value.Errors })
+    .ToArray();
+
                 if (ModelState.IsValid)
                 {
                     _context.Add(comment);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
-                ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
+                ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", commentViewModel.PostID);
             }
             catch (DbUpdateException /* ex */)
             {
@@ -78,7 +101,7 @@ namespace Instagram.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            return View(comment);
+            return View(commentViewModel);
         }
 
         // GET: Comments/Edit/5
@@ -94,15 +117,14 @@ namespace Instagram.Controllers
             {
                 return NotFound();
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", comment.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", comment.UserID);
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", comment.PostID);
             return View(comment);
         }
 
         // POST: Comments/Edit/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> EditComment(int? id)
         {
             if (id == null)
             {
@@ -128,8 +150,7 @@ namespace Instagram.Controllers
                         "see your system administrator.");
                 }
             }
-            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "Caption", CommentToUpdate.PostID);
-            ViewData["UserID"] = new SelectList(_context.Users, "ID", "Username", CommentToUpdate.UserID);
+            ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID", CommentToUpdate.PostID);
             return View(CommentToUpdate);
         }
 
@@ -182,7 +203,7 @@ namespace Instagram.Controllers
             catch (DbUpdateException /* ex */)
             {
                 //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+                return RedirectToAction(nameof(Delete), new { id, saveChangesError = true });
             }
         }
 

@@ -34,6 +34,32 @@
     <Compile Remove="Migrations\20190202161528_Initial.Designer.cs" />
     <Compile Remove="Migrations\20190202162217_Initial.cs" />
     <Compile Remove="Migrations\20190202162217_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190202185950_Initial.cs" />
+    <Compile Remove="Migrations\20190202185950_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190204001430_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204001430_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204001518_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204001518_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204002843_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204002843_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204003455_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20190204003455_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20190204133710_Initial.cs" />
+    <Compile Remove="Migrations\20190204133710_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205105207_Initial.cs" />
+    <Compile Remove="Migrations\20190205105207_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205114724_Initial.cs" />
+    <Compile Remove="Migrations\20190205114724_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205135245_Initial.cs" />
+    <Compile Remove="Migrations\20190205135245_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205142225_Initial.cs" />
+    <Compile Remove="Migrations\20190205142225_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205145038_Initial.cs" />
+    <Compile Remove="Migrations\20190205145038_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190206105537_Initial.cs" />
+    <Compile Remove="Migrations\20190206105537_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190206121213_Initial.cs" />
+    <Compile Remove="Migrations\20190206121213_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -41,6 +67,11 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

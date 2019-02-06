@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,7 +9,8 @@ namespace Instagram.Models
 {
     public class Comment
     {
-		public int ID { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
 
         [Required]
         [Display(Name = "Post ID")]
@@ -16,7 +18,7 @@ namespace Instagram.Models
 
         [Required]
         [Display(Name = "Username")]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
         [Required]
 		[StringLength(280, ErrorMessage = "Comments cannot be longer than 280 characters.")]

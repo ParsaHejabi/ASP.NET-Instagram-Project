@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +11,12 @@ namespace Instagram.Models
 {
     public class Post
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         [Display(Name = "Username")]
         [Required]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
 		[StringLength(400, ErrorMessage = "Caption cannot be longer than 400 characters.")]
         [DisplayFormat(NullDisplayText = "No caption")]

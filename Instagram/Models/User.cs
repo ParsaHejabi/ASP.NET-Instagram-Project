@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace Instagram.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int ID { get; set; }
+        //public int ID { get; set; }
 
-        [StringLength(30)]
-        [Required]
-        [RegularExpression(@"^[a-zA-Z]+[a-zA-Z\d_-]*$")]
-        [Remote(action: "VerifyUsername", controller: "Users")]
-        public string Username { get; set; }
+        //[StringLength(30)]
+        //[Required]
+        //[RegularExpression(@"^[a-zA-Z]+[a-zA-Z\d_-]*$")]
+        //[Remote(action: "VerifyUsername", controller: "Users")]
+        //public string Username { get; set; }
 
-        [DataType(DataType.Password)]
-        [StringLength(30, MinimumLength = 5)]
-        [Required]
-        public string Password { get; set; }
+        //[DataType(DataType.Password)]
+        //[StringLength(30, MinimumLength = 5)]
+        //[Required]
+        //public string Password { get; set; }
 
         [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
         [Display(Name = "First Name")]

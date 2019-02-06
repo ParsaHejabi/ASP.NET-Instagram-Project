@@ -1,4 +1,5 @@
 ﻿using Instagram.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Instagram.Data
 {
-    public class InstagramContext : DbContext
+    public class InstagramContext : IdentityDbContext
     {
         public InstagramContext(DbContextOptions<InstagramContext> options) : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> MyUsers { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
@@ -22,7 +23,7 @@ namespace Instagram.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<User>().ToTable("MyUsers");
             modelBuilder.Entity<Post>().ToTable("Post");
             modelBuilder.Entity<Comment>().ToTable("Comment");
             modelBuilder.Entity<PostLike>().ToTable("PostLike");
@@ -90,21 +91,21 @@ namespace Instagram.Data
 
             foreach (var entity in userEntities)
             {
-                ((User)entity.Entity).Username = ((User)entity.Entity).Username.ToLowerInvariant();
+                ((User)entity.Entity).UserName = ((User)entity.Entity).UserName.ToLowerInvariant();
             }
         }
 
-        public bool VerifyUsername(string username)
-        {
-            var userEntities = this.Users;
-            foreach (var user in userEntities)
-            {
-                if (user.Username.Equals(username.ToLowerInvariant()))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+        //public bool VerifyUsername(string username)
+        //{
+        //    var userEntities = this.Users;
+        //    foreach (var user in userEntities)
+        //    {
+        //        if (user.UserName.Equals(username.ToLowerInvariant()))
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
     }
 }
