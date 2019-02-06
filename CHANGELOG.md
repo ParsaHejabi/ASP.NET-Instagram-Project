@@ -1,0 +1,45 @@
+## 0.1.0 (February 06, 2019)
+  - Merge branch 'feature-login' into develop
+  - the user logged in can create new post and comment!
+  - created users page.
+  - some basic refinements!
+  - added first version of Identity finally! (might have BIG bugs!)
+  - Enforced HTTPS (might have bugs!).
+  - Merge branch 'correction_branch' into develop
+  - added complex data model. refined models and sorting by name.
+  - Merge branch 'feature-username_validation' into develop
+  - username validation added. usernames are saved lowercase.
+  - Merge branch 'develop' of https://github.com/ParsaHejabi/ASP.NET-Instagram-Project into develop
+  - Merge branch 'paging-branch' into develop
+  - Merge branch 'develop' of https://github.com/ParsaHejabi/ASP.NET-Instagram-Project into develop
+  - Merge branch 'feature-upload_file' into develop
+  - Files can be uploaded and deleted on server! extensions are checked!
+  - Paging added.
+  - Added parsa's website to the copyright section of Layout.
+  - Merge branch 'Sorting-Branch' into develop
+  - Updated DbInitializer and Create Time for Comments and Posts works!
+  - Added search for Users. Usernames are now hyperlinks to the details.
+  - Added Sort for Posts and Users
+  - Merge branch 'edit_branch' into develop
+  - BIG BIG Changes in MVC!
+  - Commit before changing User Model!
+  - Merge branch 'nikis-branch' into develop
+  - Minor bug fix.
+  - DataAnnotations Updated.
+  - Merge branch 'feature-signup_page' into develop
+  - first version API. (giant bugs!)
+  - Controllers and Views for Comment and Post added.
+  - User controller and views added.
+  - Edited Startup.cs for ConnectionString and made ON DELETE restrict in DBContext.
+  - Edited Program.cs!
+  - Created DBContext, Registered context with Dependecy Injection and Added code to seed the database.
+  - Edited and completed Models.
+  - Post model corrected.
+  - Comment, User and Post corrected. CommentLike, PostLike and CommentPostUser added.
+  - Added Post, Comment models and completed User model.
+  - Added User Model (Not complete!).
+  - Merge branch 'master' of https://github.com/ParsaHejabi/ASP.NET-Instagram-Project
+  - Add project files.
+  - Add .gitignore and .gitattributes.
+  - Initial commit
+
