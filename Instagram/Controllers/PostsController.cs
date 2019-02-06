@@ -9,6 +9,7 @@ using Instagram.Data;
 using Instagram.Models;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Instagram.Controllers
 {
@@ -16,10 +17,17 @@ namespace Instagram.Controllers
     public class PostsController : Controller
     {
         private readonly InstagramContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public PostsController(InstagramContext context)
+        public PostsController(
+            InstagramContext context,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Posts
@@ -67,6 +75,8 @@ namespace Instagram.Controllers
             Post post = null;
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
                 if (postViewModel == null || postViewModel.Image == null || postViewModel.Image.Length == 0)
                 {
                     return Content("Image is not selected!");
@@ -79,7 +89,7 @@ namespace Instagram.Controllers
                     return Content("File selected is not an image!");
                 }
 
-                var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, postViewModel.UserID);
+                var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, await _userManager.GetUserNameAsync(user));
                 var uploadFolder = Path.Combine(Path.GetTempPath(), "InstagramImages");
                 var filePath = Path.Combine(uploadFolder, uniqueFileName);
 
@@ -90,7 +100,7 @@ namespace Instagram.Controllers
 
                 post = new Post
                 {
-                    UserID = postViewModel.UserID,
+                    UserID = await _userManager.GetUserIdAsync(user),
                     Caption = postViewModel.Caption,
                     ImagePath = filePath
                 };
@@ -109,7 +119,7 @@ namespace Instagram.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            return View(post);
+            return View(postViewModel);
         }
 
         private static readonly IDictionary<string, string> _extensions = new Dictionary<string, string>()

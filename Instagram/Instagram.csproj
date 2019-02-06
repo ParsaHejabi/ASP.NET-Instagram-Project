@@ -48,6 +48,18 @@
     <Compile Remove="Migrations\20190204133710_Initial.Designer.cs" />
     <Compile Remove="Migrations\20190205105207_Initial.cs" />
     <Compile Remove="Migrations\20190205105207_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205114724_Initial.cs" />
+    <Compile Remove="Migrations\20190205114724_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205135245_Initial.cs" />
+    <Compile Remove="Migrations\20190205135245_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205142225_Initial.cs" />
+    <Compile Remove="Migrations\20190205142225_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190205145038_Initial.cs" />
+    <Compile Remove="Migrations\20190205145038_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190206105537_Initial.cs" />
+    <Compile Remove="Migrations\20190206105537_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190206121213_Initial.cs" />
+    <Compile Remove="Migrations\20190206121213_Initial.Designer.cs" />
   </ItemGroup>
 
 
