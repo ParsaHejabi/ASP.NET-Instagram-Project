@@ -23,7 +23,7 @@
                 Caption
             </th>
             <th>
-                ImagePath
+                Image
             </th>
             <th>
                 Time
@@ -34,37 +34,55 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.User.UserName)</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Caption)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostTime)
-            </td>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                @if (UserManager.GetUserId(User).Equals(item.UserID))
+            <tr>
+                @if (SignInManager.IsSignedIn(User))
                 {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                    </td>
+                    @if (UserManager.GetUserName(User).Equals(item.User.UserName))
+                    {
+                        <td>
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index">@Html.DisplayFor(modelItem => item.User.UserName)</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a asp-controller="Users" asp-action="Details" asp-route-id="@item.User.Id">@Html.DisplayFor(modelItem => item.User.UserName)</a>
+                        </td>
+                    }
                 }
-                else
+                <td>
+                    @Html.DisplayFor(modelItem => item.Caption)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Image)*@
+                    @*@{
+                            String img64 = Convert.ToBase64String(item.Image);
+                            String img64Url = string.Format("data:image/png;base64,{0}", img64);
+                        }
+                        <img src="@img64Url"/>*@
+                    <img src="@Url.Action("ViewPostImage", new { id = item.ID})" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostTime)
+                </td>
+                @if (SignInManager.IsSignedIn(User))
                 {
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a>
-                    </td>
+                    @if (UserManager.GetUserId(User).Equals(item.UserID))
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                        </td>
+                    }
                 }
-            }
-        </tr>
+            </tr>
         }
     </tbody>
 </table>

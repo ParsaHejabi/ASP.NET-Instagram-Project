@@ -36,7 +36,8 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Post.Caption)
+                    @*@Html.DisplayFor(modelItem => item.Post.Caption)*@
+                    <img src="@Url.Action("ViewPostImage", new { id = item.ID})" />
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.User.UserName)</a>

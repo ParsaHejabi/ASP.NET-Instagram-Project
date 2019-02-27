@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.Post)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Post.ID)
+            <img src="@Url.Action("ViewPostImage", new { id = Model.ID})" />
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserID)
@@ -38,12 +38,32 @@
             @Html.DisplayNameFor(model => model.CommentLikes)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommentLikes)
+            @*@Html.DisplayFor(model => model.CommentLikes)*@
+            @if (Model.CommentLikes.Count != 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th>User</th>
+                    </tr>
+                    @foreach (var item in Model.CommentLikes)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                @:No Likes
+            }
         </dd>
     </dl>
 </div>
 <div>
-	<a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-	<a asp-action="Index">Back to List</a> |
-	<a asp-action="Like" asp-route-id="@Model.ID">Like</a>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a> |
+    <a asp-action="Like" asp-route-id="@Model.ID">Like</a>
 </div>

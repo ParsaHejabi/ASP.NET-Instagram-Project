@@ -67,7 +67,7 @@ namespace Instagram.Migrations
                     b.Property<string>("Caption")
                         .HasMaxLength(400);
 
-                    b.Property<string>("ImagePath")
+                    b.Property<byte[]>("Image")
                         .IsRequired();
 
                     b.Property<DateTime>("PostTime");

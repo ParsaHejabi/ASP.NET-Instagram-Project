@@ -40,50 +40,50 @@ namespace Instagram.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public override int SaveChanges()
-        {
-            //LowerCaseUsername();
-            AddTimestamps();
-            return base.SaveChanges();
-        }
+        //public override int SaveChanges()
+        //{
+        //    //LowerCaseUsername();
+        //    AddTimestamps();
+        //    return base.SaveChanges();
+        //}
 
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            //LowerCaseUsername();
-            AddTimestamps();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
+        //public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        //{
+        //    //LowerCaseUsername();
+        //    AddTimestamps();
+        //    return base.SaveChanges(acceptAllChangesOnSuccess);
+        //}
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            //LowerCaseUsername();
-            AddTimestamps();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
+        //public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    //LowerCaseUsername();
+        //    AddTimestamps();
+        //    return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        //}
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            //LowerCaseUsername();
-            AddTimestamps();
-            return base.SaveChangesAsync(cancellationToken);
-        }
+        //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    //LowerCaseUsername();
+        //    AddTimestamps();
+        //    return base.SaveChangesAsync(cancellationToken);
+        //}
 
-        private void AddTimestamps()
-        {
-            var postEntities = ChangeTracker.Entries().Where(x => x.Entity is Post && (x.State == EntityState.Added));
+        //private void AddTimestamps()
+        //{
+        //    var postEntities = ChangeTracker.Entries().Where(x => x.Entity is Post && (x.State == EntityState.Added));
 
-            var commentEntities = ChangeTracker.Entries().Where(x => x.Entity is Comment && (x.State == EntityState.Added));
+        //    var commentEntities = ChangeTracker.Entries().Where(x => x.Entity is Comment && (x.State == EntityState.Added));
 
-            foreach (var entity in postEntities)
-            {
-                ((Post)entity.Entity).PostTime = DateTime.Now;
-            }
+        //    foreach (var entity in postEntities)
+        //    {
+        //        ((Post)entity.Entity).PostTime = DateTime.Now;
+        //    }
 
-            foreach (var entity in commentEntities)
-            {
-                ((Comment)entity.Entity).CommentTime = DateTime.Now;
-            }
-        }
+        //    foreach (var entity in commentEntities)
+        //    {
+        //        ((Comment)entity.Entity).CommentTime = DateTime.Now;
+        //    }
+        //}
 
         //private void LowerCaseUsername()
         //{
