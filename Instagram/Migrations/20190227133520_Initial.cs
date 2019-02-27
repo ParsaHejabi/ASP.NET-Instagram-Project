@@ -164,7 +164,7 @@ namespace Instagram.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserID = table.Column<string>(nullable: false),
                     Caption = table.Column<string>(maxLength: 400, nullable: true),
-                    ImagePath = table.Column<string>(nullable: false),
+                    Image = table.Column<byte[]>(nullable: false),
                     PostTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
