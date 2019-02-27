@@ -30,6 +30,7 @@ namespace Instagram.Models
 		public DateTime CommentTime { get; set; }
 
         [Display(Name = "Comment Likes")]
+        [DisplayFormat(NullDisplayText = "No Comment Likes")]
         public HashSet<CommentLike> CommentLikes { get; set; }
 
         public Post Post { get; set; }

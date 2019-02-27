@@ -1,4 +1,8 @@
-﻿@model Instagram.Models.Post
+﻿@using Microsoft.AspNetCore.Identity
+@using Instagram.Models
+@model Instagram.Models.Post
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -23,16 +27,36 @@
             @Html.DisplayFor(model => model.Caption)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
+            @Html.DisplayNameFor(model => model.Image)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
+            @*@Html.DisplayFor(model => model.Image)*@
+            <img src="@Url.Action("ViewPostImage", new { id = Model.ID})" />
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PostLikes)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PostLikes)
+            @if (Model.PostLikes.Count != 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th>User</th>
+                    </tr>
+                    @foreach (var item in Model.PostLikes)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                @:No Likes
+            }
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PostTime)
@@ -44,37 +68,50 @@
             @Html.DisplayNameFor(model => model.Comments)
         </dt>
         <dd class="col-sm-10">
-            <table class="table">
-                <tr>
-                    <th>User</th>
-                    <th>Content</th>
-                    <th>Time</th>
-                    <th>Likes Count</th>
-                </tr>
-                @foreach (var item in Model.Comments)
-                {
+            @if (Model.Comments.Count != 0)
+            {
+                <table class="table">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserID)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Content)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CommentTime)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CommentLikes.Count)
-                        </td>
+                        <th>User</th>
+                        <th>Content</th>
+                        <th>Time</th>
+                        <th>Likes Count</th>
                     </tr>
-                }
-            </table>
+                    @foreach (var item in Model.Comments)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Content)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CommentTime)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CommentLikes.Count)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                @:No Comments
+            }
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @if (UserManager.GetUserName(User).Equals(Model.User.UserName))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> @:|
+        }
+    }
     <a asp-action="Index">Back to List</a> |
-	<a asp-action="Like" asp-route-id="@Model.ID">Like</a> |
-	<a asp-controller="Comments" asp-action="Create" asp-route-id="@Model">Comment</a>
+    <a asp-action="Like" asp-route-id="@Model.ID">Like</a> |
+    <a asp-controller="Comments" asp-action="Create" asp-route-id="@Model.ID">Comment</a>
 </div>

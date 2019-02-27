@@ -31,17 +31,17 @@ namespace Instagram.Controllers
         }
 
         // GET: Posts
-		public async Task<IActionResult> Index(int? page)
-		{
-			var instagramContext = from s in _context.Posts.Include(p => p.User)
-								   select s;
-			instagramContext = instagramContext.OrderByDescending(s => s.PostTime);
-			int pageSize = 4;
-			return View(await PaginatedList<Post>.CreateAsync(instagramContext.AsNoTracking(), page ?? 1, pageSize));
-		}
+        public async Task<IActionResult> Index(int? page)
+        {
+            var instagramContext = from s in _context.Posts.Include(p => p.User)
+                                   select s;
+            instagramContext = instagramContext.OrderByDescending(s => s.PostTime);
+            int pageSize = 4;
+            return View(await PaginatedList<Post>.CreateAsync(instagramContext.AsNoTracking(), page ?? 1, pageSize));
+        }
 
-		// GET: Posts/Details/5
-		public async Task<IActionResult> Details(int? id)
+        // GET: Posts/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -50,7 +50,8 @@ namespace Instagram.Controllers
 
             var post = await _context.Posts
                 .Include(p => p.User)
-                .Include(p => p.Comments)
+                .Include(p => p.Comments).ThenInclude(c => c.User)
+                .Include(p => p.PostLikes).ThenInclude(pl => pl.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (post == null)
@@ -61,51 +62,51 @@ namespace Instagram.Controllers
             return View(post);
         }
 
-		public async Task<IActionResult> Like(int? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+        public async Task<IActionResult> Like(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-			Post post = null;
-			PostLike postlike = null;
-			try
-			{
-				var user = await _userManager.GetUserAsync(User);
+            Post post = null;
+            PostLike postlike = null;
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
 
-				post = await _context.Posts
-					.AsNoTracking()
-					.FirstOrDefaultAsync(m => m.ID == id);
+                post = await _context.Posts
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.ID == id);
 
-				postlike = new PostLike
-				{
-					UserID = await _userManager.GetUserIdAsync(user),
-					PostID = post.ID
-				};
+                postlike = new PostLike
+                {
+                    UserID = await _userManager.GetUserIdAsync(user),
+                    PostID = post.ID
+                };
 
-				if (ModelState.IsValid)
-				{
-					if (_context.PostLikes.Contains(postlike))
-					{
-						_context.Remove(postlike);
-						await _context.SaveChangesAsync();
-						return RedirectToAction(nameof(Index));
-					}
-					_context.Add(postlike);
-					await _context.SaveChangesAsync();
-					return RedirectToAction(nameof(Index));
-				}
-			}
-			catch (DbUpdateException /* ex */)
-			{
-				//Log the error (uncomment ex variable name and write a log.
-				ModelState.AddModelError("", "Unable to save changes. " +
-					"Try again, and if the problem persists " +
-					"see your system administrator.");
-			}
-			return RedirectToAction(nameof(Index));
-		}
+                if (ModelState.IsValid)
+                {
+                    if (_context.PostLikes.Contains(postlike))
+                    {
+                        _context.Remove(postlike);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    _context.Add(postlike);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Posts/Create
         public IActionResult Create()
@@ -113,8 +114,8 @@ namespace Instagram.Controllers
             return View();
         }
 
-		// POST: Posts/Create
-		[HttpPost]
+        // POST: Posts/Create
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Caption,Image")] PostViewModel postViewModel)
         {
@@ -135,24 +136,28 @@ namespace Instagram.Controllers
                     return Content("File selected is not an image!");
                 }
 
-                var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, await _userManager.GetUserNameAsync(user));
-                var uploadFolder = Path.Combine(Path.GetTempPath(), "InstagramImages");
-                var filePath = Path.Combine(uploadFolder, uniqueFileName);
+                //var uniqueFileName = GetUniqueFileName(postViewModel.Image.FileName, await _userManager.GetUserNameAsync(user));
+                //var uploadFolder = Path.Combine(Path.GetTempPath(), "InstagramImages");
+                //var filePath = Path.Combine(uploadFolder, uniqueFileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await postViewModel.Image.CopyToAsync(stream);
-                }
-
-                post = new Post
-                {
-                    UserID = await _userManager.GetUserIdAsync(user),
-                    Caption = postViewModel.Caption,
-                    ImagePath = filePath
-                };
+                //using (var stream = new FileStream(filePath, FileMode.Create))
+                //{
+                //    await postViewModel.Image.CopyToAsync(stream);
+                //}
 
                 if (ModelState.IsValid)
                 {
+                    post = new Post
+                    {
+                        UserID = await _userManager.GetUserIdAsync(user),
+                        Caption = postViewModel.Caption,
+                        PostTime = DateTime.Now
+                    };
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await postViewModel.Image.CopyToAsync(memoryStream);
+                        post.Image = memoryStream.ToArray();
+                    }
                     _context.Add(post);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -182,6 +187,42 @@ namespace Instagram.Controllers
                       + "_"
                       + Guid.NewGuid().ToString().Substring(0, 5)
                       + Path.GetExtension(fileName);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewPostImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    return File(post.Image, "image/png");
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+            return NotFound();
         }
 
         // GET: Posts/Edit/5
@@ -295,10 +336,10 @@ namespace Instagram.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (System.IO.File.Exists(post.ImagePath))
-            {
-                System.IO.File.Delete(post.ImagePath);
-            }
+            //if (System.IO.File.Exists(post.ImagePath))
+            //{
+            //    System.IO.File.Delete(post.ImagePath);
+            //}
 
             try
             {

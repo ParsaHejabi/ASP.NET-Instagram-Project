@@ -9,6 +9,7 @@ using Instagram.Data;
 using Instagram.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
 
 namespace Instagram.Controllers
 {
@@ -47,6 +48,7 @@ namespace Instagram.Controllers
             var comment = await _context.Comments
                 .Include(c => c.Post)
                 .Include(c => c.User)
+                .Include(c => c.CommentLikes).ThenInclude(cl => cl.User)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (comment == null)
@@ -57,54 +59,54 @@ namespace Instagram.Controllers
             return View(comment);
         }
 
-		public async Task<IActionResult> Like(int? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
+        public async Task<IActionResult> Like(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-			Comment comment = null;
-			CommentLike commentlike = null;
-			try
-			{
-				var user = await _userManager.GetUserAsync(User);
+            Comment comment = null;
+            CommentLike commentlike = null;
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
 
-				comment = await _context.Comments
-					.AsNoTracking()
-					.FirstOrDefaultAsync(m => m.ID == id);
+                comment = await _context.Comments
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.ID == id);
 
-				commentlike = new CommentLike
-				{
-					UserID = await _userManager.GetUserIdAsync(user),
-					 CommentID = comment.ID
-				};
+                commentlike = new CommentLike
+                {
+                    UserID = await _userManager.GetUserIdAsync(user),
+                    CommentID = comment.ID
+                };
 
-				if (ModelState.IsValid)
-				{
-					if (_context.CommentLikes.Contains(commentlike))
-					{
-						_context.Remove(commentlike);
-						await _context.SaveChangesAsync();
-						return RedirectToAction(nameof(Index));
-					}
-					_context.Add(commentlike);
-					await _context.SaveChangesAsync();
-					return RedirectToAction(nameof(Index));
-				}
-			}
-			catch (DbUpdateException /* ex */)
-			{
-				//Log the error (uncomment ex variable name and write a log.
-				ModelState.AddModelError("", "Unable to save changes. " +
-					"Try again, and if the problem persists " +
-					"see your system administrator.");
-			}
-			return RedirectToAction(nameof(Index));
-		}
+                if (ModelState.IsValid)
+                {
+                    if (_context.CommentLikes.Contains(commentlike))
+                    {
+                        _context.Remove(commentlike);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    _context.Add(commentlike);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
-		// GET: Comments/Create
-		public IActionResult Create()
+        // GET: Comments/Create
+        public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "ID", "ID");
             return View();
@@ -124,7 +126,8 @@ namespace Instagram.Controllers
                 {
                     UserID = await _userManager.GetUserIdAsync(user),
                     Content = commentViewModel.Content,
-                    PostID = commentViewModel.PostID
+                    PostID = commentViewModel.PostID,
+                    CommentTime = DateTime.Now
                 };
 
                 var errors = ModelState
@@ -148,6 +151,42 @@ namespace Instagram.Controllers
                     "see your system administrator.");
             }
             return View(commentViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewPostImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments
+                .Include(p => p.User)
+                .Include(p => p.Post)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    return File(comment.Post.Image, "image/png");
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+            return NotFound();
         }
 
         // GET: Comments/Edit/5
